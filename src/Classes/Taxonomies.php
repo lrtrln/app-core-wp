@@ -23,11 +23,11 @@ class Taxonomies
      */
     public function register(): void
     {
-        $taxonomies       = [];
+        $taxonomies      = [];
         $taxonomiesFiles = glob(CONTENTS . '/taxonomies/*.php');
 
         foreach ($taxonomiesFiles as $file) {
-            $taxonomies[] = require($file);
+            $taxonomies[] = require $file;
         }
 
         foreach ($taxonomies as $taxonomy) {

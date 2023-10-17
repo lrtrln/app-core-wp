@@ -3,8 +3,6 @@
 namespace App\Classes;
 
 use App\Traits\Singleton;
-
-use Carbon_Fields\Block;
 use Carbon_Fields\Field;
 
 class Blocks
@@ -32,7 +30,7 @@ class Blocks
         $files = glob(CONTENTS . '/blocks/*.php');
 
         foreach ($files as $file) {
-            $fields = require($file);
+            $fields = require $file;
 
             if (is_callable($fields)) {
                 $fields();

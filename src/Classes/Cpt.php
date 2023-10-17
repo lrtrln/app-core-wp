@@ -23,13 +23,13 @@ class Cpt
      *
      * @return void
      */
-    public function register() :void
+    public function register(): void
     {
-        $postTypes = [];
+        $postTypes      = [];
         $postTypesFiles = glob(CONTENTS . '/post-types/*.php');
 
         foreach ($postTypesFiles as $file) {
-            $postTypes[] = require($file);
+            $postTypes[] = require $file;
         }
 
         foreach ($postTypes as $cpt) {

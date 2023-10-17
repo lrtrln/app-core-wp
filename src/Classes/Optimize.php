@@ -35,34 +35,34 @@ class Optimize
     public function __construct(array $optimizations = [])
     {
         $defaults = [
-            'blockExternalHTTP'     => false,
-            'deferCSS'              => false,
-            'deferJS'               => true,
-            'disableComments'       => false,
-            'disableEmbed'          => false,
-            'disableEmoji'          => true,
-            'disableFeeds'          => false,
-            'disableHeartbeat'      => false,
-            'disablejQuery'         => false,
-            'disablejQueryMigrate'  => true,
-            'disableRestApi'        => false,
-            'disableRSD'            => true,
-            'disableShortlinks'     => true,
-            'disableVersionNumbers' => true,
-            'disableWLWManifest'    => true,
-            'disableWPVersion'      => true,
-            'disableXMLRPC'         => true,
-            'jqueryToFooter'        => true,
-            'limitCommentsJS'       => true,
-            'limitRevisions'        => true,
-            'removeCommentsStyle'   => true,
-            'slowHeartbeat'         => true,
-            'removeQueryString'     => false,
-            'blockUserEnumeration'  => false,
-            'redirect404ToHomepage' => false,
-            'enableSvgUpload'       => false,
-            'removeDashboardWidgets'=> false,
-            'disableThemeEditor'    => true,
+            'blockExternalHTTP'      => false,
+            'deferCSS'               => false,
+            'deferJS'                => true,
+            'disableComments'        => false,
+            'disableEmbed'           => false,
+            'disableEmoji'           => true,
+            'disableFeeds'           => false,
+            'disableHeartbeat'       => false,
+            'disablejQuery'          => false,
+            'disablejQueryMigrate'   => true,
+            'disableRestApi'         => false,
+            'disableRSD'             => true,
+            'disableShortlinks'      => true,
+            'disableVersionNumbers'  => true,
+            'disableWLWManifest'     => true,
+            'disableWPVersion'       => true,
+            'disableXMLRPC'          => true,
+            'jqueryToFooter'         => true,
+            'limitCommentsJS'        => true,
+            'limitRevisions'         => true,
+            'removeCommentsStyle'    => true,
+            'slowHeartbeat'          => true,
+            'removeQueryString'      => false,
+            'blockUserEnumeration'   => false,
+            'redirect404ToHomepage'  => false,
+            'enableSvgUpload'        => false,
+            'removeDashboardWidgets' => false,
+            'disableThemeEditor'     => true,
         ];
 
         $this->optimize = wp_parse_args($optimizations, $defaults);
@@ -743,8 +743,9 @@ class Optimize
      * @since 1.1
      * @return void
      */
-    private function removeDashboardWidgets() {
-        add_action('wp_dashboard_setup', function() {
+    private function removeDashboardWidgets()
+    {
+        add_action('wp_dashboard_setup', function () {
             global $wp_meta_boxes;
             remove_action('welcome_panel', 'wp_welcome_panel');
             unset($wp_meta_boxes['dashboard']['side']['core']['dashboard_quick_press']);

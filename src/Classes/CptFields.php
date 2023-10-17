@@ -3,7 +3,6 @@
 namespace App\Classes;
 
 use App\Traits\Singleton;
-
 use Carbon_Fields\Container;
 use Carbon_Fields\Field;
 
@@ -32,7 +31,7 @@ class CptFields
         $files = glob(CONTENTS . '/fields/*.php');
 
         foreach ($files as $file) {
-            $fields = require($file);
+            $fields = require $file;
 
             if (is_callable($fields)) {
                 $fields();
