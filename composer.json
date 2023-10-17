@@ -1,0 +1,19 @@
+{
+    "name": "lrtrln/app-core",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "LRTRLN",
+            "email": "lt@lrtrln.fr"
+        }
+    ],
+    "require": {
+        "htmlburger/carbon-fields": "^3.6",
+        "htmlburger/admin-column-manager": "^1.0"
+    }
+}

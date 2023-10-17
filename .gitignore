@@ -1,0 +1,15 @@
+# Ignore les fichiers de configuration Sublime Text
+dev.sublime-project
+dev.sublime-workspace
+
+# Ignore le répertoire vendor
+vendor/
+
+# Ignore les fichiers de sauvegarde de texte
+*.bak
+
+# Ignore les fichiers de logs
+*.log
+
+# Ignore le fichier composer.lock
+composer.lock
