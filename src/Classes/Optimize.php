@@ -63,8 +63,8 @@ class Optimize
             'enableSvgUpload'        => false,
             'removeDashboardWidgets' => false,
             'disableThemeEditor'     => true,
-            'disableBlockCssInline'  => true,
-            'disableBlockJsInline'   => true
+            'disableBlockCssInline'  => false,
+            'disableBlockJsInline'   => false
         ];
 
         $this->optimize = wp_parse_args($optimizations, $defaults);
