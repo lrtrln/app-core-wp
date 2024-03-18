@@ -5,7 +5,7 @@
  *
  * This class provides a set of optimization options for WordPress.
  *
- * @version 1.1
+ * @version 1.2
  */
 
 namespace App\Classes;
@@ -63,6 +63,8 @@ class Optimize
             'enableSvgUpload'        => false,
             'removeDashboardWidgets' => false,
             'disableThemeEditor'     => true,
+            'disableBlockCssInline'  => true,
+            'disableBlockJsInline'   => true
         ];
 
         $this->optimize = wp_parse_args($optimizations, $defaults);
@@ -767,5 +769,51 @@ class Optimize
     private function disableThemeEditor()
     {
         define('DISALLOW_FILE_EDIT', true);
+    }
+
+    /**
+     * Disable block CSS inline styles.
+     *
+     * This function dequeues specific stylesheets related to Gutenberg blocks
+     * in order to prevent them from being included inline in the HTML output.
+     * These stylesheets are dequeued during the 'wp_enqueue_scripts' action hook.
+     *
+     * @since 1.2
+     * @access private
+     * @return void
+     */
+    private function disableBlockCssInline()
+    {
+        add_action('wp_enqueue_scripts', function() {
+            wp_dequeue_style('global-styles');
+            wp_dequeue_style('wp-block-library');
+            wp_dequeue_style('wp-block-paragraph');
+            wp_dequeue_style('core-block-supports');
+            wp_dequeue_style('wp-block-navigation');
+            wp_dequeue_style('wp-block-navigation-link');
+            wp_dequeue_style('wp-block-template-skip-link');
+            wp_dequeue_style('wp-block-group');
+            wp_dequeue_style('wp-block-post-title');
+            wp_dequeue_style('wp-block-site-title');
+        });
+    }
+
+    /**
+     * Disable block JavaScript inline scripts.
+     *
+     * This function dequeues a specific JavaScript file related to Gutenberg blocks
+     * in order to prevent it from being included inline in the HTML output.
+     * This JavaScript file is dequeued during the 'wp_enqueue_scripts' action hook.
+     *
+     * @since 1.2
+     * @access private
+     *
+     * @return void
+     */
+    private function disableBlockJsInline()
+    {
+        add_action('wp_enqueue_scripts', function() {
+            wp_dequeue_script('wp-block-template-skip-link');
+        });
     }
 }
