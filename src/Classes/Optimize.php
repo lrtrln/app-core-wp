@@ -5,7 +5,7 @@
  *
  * This class provides a set of optimization options for WordPress.
  *
- * @version 1.2
+ * @version 1.3
  */
 
 namespace App\Classes;
@@ -64,7 +64,8 @@ class Optimize
             'removeDashboardWidgets' => false,
             'disableThemeEditor'     => true,
             'disableBlockCssInline'  => false,
-            'disableBlockJsInline'   => false
+            'disableBlockJsInline'   => false,
+            'disableFontLibrary'     => false,
         ];
 
         $this->optimize = wp_parse_args($optimizations, $defaults);
@@ -784,7 +785,7 @@ class Optimize
      */
     private function disableBlockCssInline()
     {
-        add_action('wp_enqueue_scripts', function() {
+        add_action('wp_enqueue_scripts', function () {
             wp_dequeue_style('global-styles');
             wp_dequeue_style('wp-block-library');
             wp_dequeue_style('wp-block-paragraph');
@@ -812,8 +813,35 @@ class Optimize
      */
     private function disableBlockJsInline()
     {
-        add_action('wp_enqueue_scripts', function() {
+        add_action('wp_enqueue_scripts', function () {
             wp_dequeue_script('wp-block-template-skip-link');
+        });
+    }
+
+    /**
+     * Disable the Font Library feature.
+     *
+     *
+     * @since 1.3
+     * @access private
+     *
+     * @return void
+     */
+    private function disableFontLibrary()
+    {
+        add_filter('block_editor_settings_all', function ($settings) {
+            $settings['fontLibraryEnabled'] = false;
+
+            return $settings;
+        });
+
+        add_action('init', function () {
+            unregister_post_type('wp_font_family');
+            unregister_post_type('wp_font_face');
+        });
+
+        add_action('admin_menu', function () {
+            remove_submenu_page('themes.php', 'manage-fonts');
         });
     }
 }
