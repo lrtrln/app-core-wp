@@ -48,17 +48,3 @@ foreach ($loadClass as $class) {
 }
 
 require_once 'src/Classes/helpers.php';
-
-
-
-
-function disable_site_health_errors_on_localhost($tests) {
-    // Check if the site is running on localhost
-    //if ($_SERVER['SERVER_ADDR'] === 'wp.test' ) {
-
-
-    //}
-    //_log($tests);
-
-    return $tests;
-}
