@@ -66,6 +66,9 @@ class Optimize
             'disableBlockCssInline'  => false,
             'disableBlockJsInline'   => false,
             'disableFontLibrary'     => false,
+            'disableSiteMap'         => false,
+            'disableAutoUpdate'      => false,
+            'disableCapitalPDangit'  => true
         ];
 
         $this->optimize = wp_parse_args($optimizations, $defaults);
@@ -843,5 +846,65 @@ class Optimize
         add_action('admin_menu', function () {
             remove_submenu_page('themes.php', 'manage-fonts');
         });
+    }
+
+    /**
+     * Disable sitemap.
+     *
+     *
+     * @since 1.3
+     * @access private
+     *
+     * @return void
+     */
+    private function disableSiteMap()
+    {
+        add_filter('wp_sitemaps_enabled', '__return_false');
+        remove_action('init', 'wp_sitemaps_get_server');
+    }
+
+    /**
+     * Disable auto update.
+     *
+     *
+     * @since 1.3
+     * @access private
+     *
+     * @return void
+     */
+    private function disableAutoUpdate()
+    {
+        if (!defined('AUTOMATIC_UPDATER_DISABLED')) {
+            define('AUTOMATIC_UPDATER_DISABLED', true);
+        }
+
+        if (!defined('WP_AUTO_UPDATE_CORE')) {
+            define('WP_AUTO_UPDATE_CORE', false);
+        }
+
+        add_filter('pre_option_auto_update_core_dev', '__return_false');
+        add_filter('pre_option_auto_update_core_minor', '__return_false');
+        add_filter('pre_option_auto_update_core_major', '__return_false');
+        add_filter('pre_option_auto_core_update_failed', '__return_false');
+        add_filter('pre_option_auto_update_themes', '__return_false');
+        add_filter('pre_option_auto_update_plugins', '__return_false');
+    }
+
+    /**
+     * Disable correct automatically every single “Wordpress”, without a capital P,
+     *
+     *
+     * @since 1.3
+     * @access private
+     *
+     * @return void
+     */
+    private function disableCapitalPDangit()
+    {
+        remove_filter('wp_title', 'capital_P_dangit', 11);
+        remove_filter('the_title', 'capital_P_dangit', 11);
+        remove_filter('the_content', 'capital_P_dangit', 11);
+        remove_filter('widget_text_content', 'capital_P_dangit', 11);
+        remove_filter('comment_text', 'capital_P_dangit', 31);
     }
 }

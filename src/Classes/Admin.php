@@ -20,6 +20,8 @@ class Admin
         add_action('after_setup_theme', [$this, 'crbLoad']);
 
         add_action('admin_enqueue_scripts', [$this, 'styles']);
+
+        add_filter('site_status_tests', [$this, 'disableSiteHealthErrorsOnDev']);
     }
 
     public function initMenu()
@@ -62,5 +64,20 @@ class Admin
 
         add_theme_support('editor-styles');
         wp_enqueue_style('admin-custom', APPURL . '/assets/css/editor.css');
+    }
+
+    function disableSiteHealthErrorsOnDev($tests)
+    {
+        if (defined('WP_ENV') && WP_ENV == 'dev') {
+            unset($tests['direct']['debug_enabled']);
+            unset($tests['direct']['ssl_support']);
+            unset($tests['direct']['plugin_version']);
+            unset($tests['direct']['theme_version']);
+            unset($tests['async']['https_status']);
+            unset($tests['async']['page_cache']);
+            unset($tests['async']['page_cache']);
+        }
+
+        return $tests;
     }
 }

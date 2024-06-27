@@ -58,8 +58,8 @@ class Config
                 'enableSvgUpload'        => true,
                 'removeDashboardWidgets' => false,
                 'disableThemeEditor'     => true,
-                'disableBlockCssInline'  => true,
-                'disableBlockJsInline'   => true,
+                'disableBlockCssInline'  => false,
+                'disableBlockJsInline'   => false,
                 'disableFontLibrary'     => false,
             ]
         );
