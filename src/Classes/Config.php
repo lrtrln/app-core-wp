@@ -57,6 +57,8 @@ class Config
                 'disableWpMail'            => false,
                 'disableWpSitemap'         => false,
                 'disableIntermediateImage' => true,
+                'disallowThemeInstall'     => false,
+                'disallowPluginInstall'    => false,
                 'jqueryToFooter'           => true,
                 'limitCommentsJS'          => true,
                 'limitRevisions'           => true,

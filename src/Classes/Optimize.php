@@ -62,6 +62,8 @@ class Optimize
             'disableWpMail'            => false,
             'disableWpSitemap'         => false,
             'disableIntermediateImage' => false,
+            'disallowThemeInstall'     => false,
+            'disallowPluginInstall'    => false,
             'jqueryToFooter'           => true,
             'limitCommentsJS'          => true,
             'limitRevisions'           => true,
@@ -541,6 +543,71 @@ class Optimize
             unset($sizes['large']);
 
             return $sizes;
+        });
+    }
+
+    private function disallowThemeInstall()
+    {
+        add_filter('wp_handle_upload_prefilter', function ($file) {
+            if (isset($_FILES['themezip'])) {
+                if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'zip') {
+                    $file['type']  = 'disallowed';
+                    $file['error'] = esc_html__("Theme upload is not allowed.", 'wpmastertoolkit');
+                }
+            }
+
+            return $file;
+        });
+
+        add_action('admin_print_styles-theme-install.php', function () {
+            print <<<HTML
+            <style>
+                .upload-view-toggle {
+                    display: none !important;
+                }
+            </style>
+            HTML;
+        });
+
+        add_action('admin_menu', function () {
+            remove_submenu_page('themes.php', 'theme-install.php');
+            remove_submenu_page('themes.php', 'themes.php');
+        }, 999);
+    }
+
+    private function disallowPluginInstall()
+    {
+        add_filter('wp_handle_upload_prefilter', function ($file) {
+            if (isset($_FILES['pluginzip'])) {
+                if (pathinfo($file['name'], PATHINFO_EXTENSION) === 'zip') {
+                    $file['type']  = 'disallowed';
+                    $file['error'] = esc_html__("Plugin upload is not allowed.", 'wpmastertoolkit');
+                }
+            }
+
+            return $file;
+        });
+
+        add_action('admin_print_styles-plugin-install.php', function () {
+            print <<<HTML
+            <style>
+                .upload-view-toggle {
+                    display: none !important;
+                }
+            </style>
+            HTML;
+        });
+
+        add_action('admin_menu', function() {
+            remove_submenu_page('plugins.php', 'plugin-install.php');
+        }, 999);
+
+        add_action('admin_head', function() {
+            print <<<HTML
+                <style>
+                    .plugins-php .page-title-action { display: none !important; }
+                </style>
+            HTML;
         });
     }
 
