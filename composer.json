@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "htmlburger/carbon-fields": "^3.6.3",
+        "htmlburger/carbon-fields": "^3.6.5",
         "htmlburger/admin-column-manager": "^1.0"
     }
 }
