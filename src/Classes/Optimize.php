@@ -5,7 +5,7 @@
  *
  * This class provides a set of optimization options for WordPress.
  *
- * @version 1.3
+ * @version 1.3.3
  */
 
 namespace App\Classes;
@@ -35,40 +35,43 @@ class Optimize
     public function __construct(array $optimizations = [])
     {
         $defaults = [
-            'blockExternalHTTP'      => false,
-            'deferCSS'               => false,
-            'deferJS'                => true,
-            'disableComments'        => false,
-            'disableEmbed'           => false,
-            'disableEmoji'           => true,
-            'disableFeeds'           => false,
-            'disableHeartbeat'       => false,
-            'disablejQuery'          => false,
-            'disablejQueryMigrate'   => true,
-            'disableRestApi'         => false,
-            'disableRSD'             => true,
-            'disableShortlinks'      => true,
-            'disableVersionNumbers'  => true,
-            'disableWLWManifest'     => true,
-            'disableWPVersion'       => true,
-            'disableXMLRPC'          => true,
-            'jqueryToFooter'         => true,
-            'limitCommentsJS'        => true,
-            'limitRevisions'         => true,
-            'removeCommentsStyle'    => true,
-            'slowHeartbeat'          => true,
-            'removeQueryString'      => false,
-            'blockUserEnumeration'   => false,
-            'redirect404ToHomepage'  => false,
-            'enableSvgUpload'        => false,
-            'removeDashboardWidgets' => false,
-            'disableThemeEditor'     => true,
-            'disableBlockCssInline'  => false,
-            'disableBlockJsInline'   => false,
-            'disableFontLibrary'     => false,
-            'disableSiteMap'         => false,
-            'disableAutoUpdate'      => false,
-            'disableCapitalPDangit'  => true
+            'blockExternalHTTP'        => false,
+            'deferCSS'                 => false,
+            'deferJS'                  => true,
+            'disableComments'          => false,
+            'disableEmbed'             => false,
+            'disableEmoji'             => true,
+            'disableFeeds'             => false,
+            'disableHeartbeat'         => false,
+            'disablejQuery'            => false,
+            'disablejQueryMigrate'     => true,
+            'disableRestApi'           => false,
+            'disableRSD'               => true,
+            'disableShortlinks'        => true,
+            'disableVersionNumbers'    => true,
+            'disableWLWManifest'       => true,
+            'disableWPVersion'         => true,
+            'disableXMLRPC'            => true,
+            'disableThemeEditor'       => true,
+            'disableBlockCssInline'    => false,
+            'disableBlockJsInline'     => false,
+            'disableFontLibrary'       => false,
+            'disableSiteMap'           => false,
+            'disableAutoUpdate'        => false,
+            'disableCapitalPDangit'    => true,
+            'disableWpMail'            => false,
+            'disableWpSitemap'         => false,
+            'disableIntermediateImage' => false,
+            'jqueryToFooter'           => true,
+            'limitCommentsJS'          => true,
+            'limitRevisions'           => true,
+            'removeCommentsStyle'      => true,
+            'slowHeartbeat'            => true,
+            'removeQueryString'        => false,
+            'blockUserEnumeration'     => false,
+            'redirect404ToHomepage'    => false,
+            'enableSvgUpload'          => false,
+            'removeDashboardWidgets'   => false,
         ];
 
         $this->optimize = wp_parse_args($optimizations, $defaults);
@@ -261,16 +264,12 @@ class Optimize
 
             // Removes the oEmbed JavaScript.
             remove_action('wp_head', 'wp_oembed_add_host_js');
-
             // Removes the oEmbed discovery links.
             remove_action('wp_head', 'wp_oembed_add_discovery_links');
-
             // Remove the oEmbed route for the REST API epoint.
             remove_action('rest_api_init', 'wp_oembed_register_route');
-
             // Disables oEmbed auto discovery.
             remove_filter('oembed_dataparse', 'wp_filter_oembed_result', 10);
-
             // Turn off oEmbed auto discovery.
             add_filter('embed_oembed_discover', '__return_false');
         });
@@ -522,6 +521,30 @@ class Optimize
     }
 
     /**
+     * Disable the generation of intermediate image sizes.
+     *
+     * This function removes the default image sizes (thumbnail, medium, medium_large, large)
+     * from the list of image sizes that WordPress generates during the image upload process.
+     * The $sizes array is modified by unsetting these specific sizes, preventing their creation.
+     *
+     * @since 1.3.3
+     * @param array $sizes Array of intermediate image sizes.
+     *
+     * @return array Modified array of image sizes with the specified sizes removed.
+     */
+    private function disableIntermediateImage()
+    {
+        add_filter('intermediate_image_sizes_advanced', function ($sizes) {
+            unset($sizes['thumbnail']);
+            unset($sizes['medium']);
+            unset($sizes['medium_large']);
+            unset($sizes['large']);
+
+            return $sizes;
+        });
+    }
+
+    /**
      * Puts jquery inside the footer
      *
      * @since 1.0
@@ -580,7 +603,10 @@ class Optimize
     {
         add_action('widgets_init', function () {
             global $wp_widget_factory;
-            remove_action('wp_head', [$wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style']);
+            remove_action('wp_head',
+                [$wp_widget_factory->widgets['WP_Widget_Recent_Comments'],
+                    'recent_comments_style']
+            );
         });
     }
 
@@ -799,6 +825,7 @@ class Optimize
             wp_dequeue_style('wp-block-group');
             wp_dequeue_style('wp-block-post-title');
             wp_dequeue_style('wp-block-site-title');
+            wp_dequeue_style('wp-block-post-featured-image');
         });
     }
 
@@ -893,7 +920,6 @@ class Optimize
     /**
      * Disable correct automatically every single “Wordpress”, without a capital P,
      *
-     *
      * @since 1.3
      * @access private
      *
@@ -906,5 +932,15 @@ class Optimize
         remove_filter('the_content', 'capital_P_dangit', 11);
         remove_filter('widget_text_content', 'capital_P_dangit', 11);
         remove_filter('comment_text', 'capital_P_dangit', 31);
+    }
+
+    private function disableWpMail()
+    {
+        add_filter('pre_wp_mail', '__return_false');
+    }
+
+    private function disableWpSitemap()
+    {
+        add_filter('wp_sitemaps_enabled', '__return_false');
     }
 }

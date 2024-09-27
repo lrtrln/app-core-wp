@@ -85,3 +85,7 @@ function getExcerpt($lenght = 15)
     return wp_trim_words(get_the_excerpt(), $lenght);
 }
 
+function isDev(): bool
+{
+    return defined('WP_ENV') && WP_ENV === 'dev';
+}
